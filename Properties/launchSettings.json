@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "NetCorePractice": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "PROPERTY1": "10",
+        "PROPERTY2": "20"
+      }
+    }
+  }
+}

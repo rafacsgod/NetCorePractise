@@ -1,36 +1,37 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Serilog;
+using Serilog.Core;
 
 namespace NetCorePractice
 {
     class PrintWorker
     {
-        private IPrintService _printer;
-        private ILogger _logger;
-        private IConfiguration _config;
-
+        private readonly IPrintService _printer;
+        private readonly IConfiguration _config;
 
         //внедрение зависимостей через конструктор класса
-        public PrintWorker(IPrintService printer, ILogger<PrintWorker> logger, IConfiguration config)
+        public PrintWorker(IPrintService printer, IConfiguration config)
         {
             _printer = printer;
-            _logger = logger;
             _config = config;
         }
 
         public void Work()
         {
-            int n = _config.GetValue<int>("NetCorePractise:TimesToPrint");
+            //конфигурирование логгера
+            Log.Logger = new LoggerConfiguration()
+            .WriteTo.File("log-.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
+
+            //считывание переменной окружения PROPERTY1 из конфигурации
+            int n = _config.GetValue<int>("PROPERTY1");
+
 
             for (int i = 1; i <= n; ++i)
             {
                 _printer.Print(i);
-                _logger.LogInformation($"Напечатана цифра: {i}");
+                Log.Information($"Напечатана цифра: {i}");
             }
         }
     }
